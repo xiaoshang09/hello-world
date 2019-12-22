@@ -173,25 +173,24 @@ int main_5()
 	return 0;
 }
 
-bool stillSoduku(int* soduku, int row, int col)
+bool stillSoduku(int* soduku, int row, int col, int num)
 {
-	int num = soduku[row * 9 + col];
 	bool row_echo = false;
 	bool col_echo = false;
 	bool palace_echo = false;
 
 	for (int i = 0; i < 9; i++)
 	{
-		if (i != row && num == soduku[row * 9 + i])
+		if (i != col && num == soduku[row * 9 + i])
 		{
 			row_echo = true;
 			break;
 		}
 	}
 
-	for (int j = 0; j < 9; j++)
+	for (int i = 0; i < 9; i++)
 	{
-		if (j != col && num == soduku[j * 9 + col])
+		if (i != row && num == soduku[i * 9 + col])
 		{
 			col_echo = true;
 			break;
@@ -204,7 +203,7 @@ bool stillSoduku(int* soduku, int row, int col)
 	{
 		for (int j = col_start * 3; j < col_start * 3 + 3; j++)
 		{
-			if ((i != row || j != col) && num != soduku[i * 9 + j])
+			if ((i != row || j != col) && num == soduku[i * 9 + j])
 			{
 				palace_echo = true;
 				break;
@@ -215,58 +214,56 @@ bool stillSoduku(int* soduku, int row, int col)
 	return !(row_echo || col_echo || palace_echo);
 }
 
-bool fillSoduku(int* soduku, int idx, int num)
+bool fillSoduku(int* soduku, int curIdx, int curNum)
 {
-	if (idx < 81)
+	if (curIdx < 81)
 	{
-		if (soduku[idx] == 0)
+		if (curIdx == 70)
+			int a = 5;
+		if (curIdx == 71)
+			int a = 5;
+		if (curIdx == 72)
+			int a = 5;
+		if (curIdx == 73)
+			int a = 5;
+		if (curIdx == 74)
+			int a = 5;
+		if (curIdx == 75)
+			int a = 5;
+
+		if (soduku[curIdx] == 0)
 		{
-			soduku[idx] = num;
-			bool flag_still = stillSoduku(soduku, idx / 9, idx % 9);
+			bool flag_still = stillSoduku(soduku, curIdx / 9, curIdx % 9, curNum);
 			if (flag_still)
 			{
-				
-
-			}
-
-
-
-
-
-
-
-
-
-
-			if (flag_still)
-			{
-				bool flag_fill = fillSoduku(soduku, idx, num);
-				if (flag_fill)
-				{
-					idx++;
-					num = 1;
-				}
+				soduku[curIdx] = curNum;
+				bool flag_fill_1 = fillSoduku(soduku, curIdx + 1, 1);
+				if (flag_fill_1)
+					return true;
 				else
 				{
-					num++;
-					if (num > 9)
+					if (curNum < 9)
+					{
+						soduku[curIdx] = 0;
+						return fillSoduku(soduku, curIdx, curNum + 1);
+					}
+					else
 						return false;
 				}
 			}
 			else
 			{
-				num++;
-				if (num > 9)
+				if (curNum < 9)
+					return	fillSoduku(soduku, curIdx, curNum + 1);
+				else
 					return false;
 			}
 		}
 		else
-		{
-			idx++;
-			num = 1;
-		}
-		fillSoduku(soduku, idx, num);
+			return fillSoduku(soduku, curIdx + 1, 1);
 	}
+	else
+		return true;
 }
 
 
@@ -277,8 +274,9 @@ int main()
 	for (int i = 0; i < 81; i++)
 		cin >> soduku[i];
 
-	fillSoduku(soduku, 0, 1);
+	bool flag = fillSoduku(soduku, 0, 1);
 
+	cout << endl;
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
